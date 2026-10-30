@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block content %}
+    <h1 class="mb-4">Recent Posts</h1>
+    
+    <!-- Search Form (Week 6) -->
+    <form method="GET" action="{{ url_for('main.index') }}" class="mb-4 d-flex">
+        <input type="text" name="q" class="form-control me-2" placeholder="Search posts..." value="{{ query }}">
+        <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+
+    {% for post in posts.items %}
+        <div class="card mb-3">
+            <div class="card-body">
+                <h4 class="card-title"><a href="{{ url_for('main.post', id=post.id) }}">{{ post.title }}</a></h4>
+                <small class="text-muted">
+                    By <a href="{{ url_for('main.user_profile', username=post.author.username) }}">{{ post.author.username }}</a> 
+                    on {{ post.timestamp.strftime('%Y-%m-%d') }}
+                </small>
+                <!-- striptags lagaya hai taaki rich text ke HTML tags preview me na dikhein -->
+                <p class="card-text mt-2">{{ post.content | striptags | truncate(200) }}...</p>
+                <div>
+                    {% for tag in post.tags %}
+                        <a href="{{ url_for('main.tag_filter', name=tag.name) }}" class="badge bg-secondary text-decoration-none">#{{ tag.name }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <p>No posts found.</p>
+    {% endfor %}
+
+    <!-- Pagination (Week 4) -->
+    <nav>
+        <ul class="pagination">
+            {% if posts.has_prev %}
+            <li class="page-item"><a class="page-link" href="{{ url_for('main.index', page=posts.prev_num, q=query) }}">Previous</a></li>
+            {% endif %}
+            {% if posts.has_next %}
+            <li class="page-item"><a class="page-link" href="{{ url_for('main.index', page=posts.next_num, q=query) }}">Next</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+{% endblock %}

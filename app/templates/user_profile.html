@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-body text-center">
+                    <h2 class="card-title">{{ user.username }}</h2>
+                    <p class="text-muted">{{ user.email }}</p>
+                    <p>Member since: {{ user.posts.first().timestamp.strftime('%Y-%m-%d') if user.posts.first() else 'N/A' }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <h3>Posts by {{ user.username }}</h3>
+            {% for post in posts %}
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title"><a href="{{ url_for('main.post', id=post.id) }}">{{ post.title }}</a></h5>
+                        <small class="text-muted">{{ post.timestamp.strftime('%Y-%m-%d') }}</small>
+                    </div>
+                </div>
+            {% else %}
+                <p>This user has not written any posts yet.</p>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
